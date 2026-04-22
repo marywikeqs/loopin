@@ -51,11 +51,11 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
     <div class="label">STATUS<span>*</span></div>
     <select id="status" onchange="updatePreview()">
       <option value="">— Select —</option>
-      <option value="✅ Completed">✅ Completed</option>
-      <option value="🚀 Gone Live">🚀 Gone Live</option>
-      <option value="🔄 In Progress">🔄 In Progress</option>
-      <option value="🔵 In Review">🔵 In Review</option>
-      <option value="⚠️ Blocked">⚠️ Blocked</option>
+      <option value="Completed">Completed</option>
+      <option value="Gone Live">Gone Live</option>
+      <option value="In Progress">In Progress</option>
+      <option value="In Review">In Review</option>
+      <option value="Blocked">Blocked</option>
     </select>
   </div>
   <div>
@@ -73,9 +73,6 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
 <div class="label">RELATED FILE / LINK</div>
 <input type="text" id="related-file" placeholder="https://..." oninput="updatePreview()">
 
-<div class="label">NOTIFY (SLACK USERNAMES)</div>
-<input type="text" id="notify" placeholder="e.g. john.smith, jane.doe" oninput="updatePreview()">
-<div style="font-size:9px;color:#7d8590;margin-top:3px">Separate multiple names with commas. They'll be @mentioned in the message.</div>
 
 <hr class="divider">
 
@@ -96,20 +93,13 @@ function buildMessage() {
   const summary   = document.getElementById('summary').value.trim();
   const nextSteps = document.getElementById('next-steps').value.trim();
   const file      = document.getElementById('related-file').value.trim();
-  const notify    = document.getElementById('notify').value.trim();
-
   if (!name && !status && !summary) return '';
 
-  const mentions = notify
-    ? notify.split(',').map(n => `@${n.trim().replace(/^@/, '')}`).join(' ')
-    : '';
-
   let msg = '';
-  if (mentions)  msg += `${mentions}\n\n`;
   if (name)      msg += `*${name}*\n`;
   if (status)    msg += `*Status:* ${status}\n`;
   if (by)        msg += `*Completed By:* ${by}\n`;
-  if (summary)   msg += `\n${summary}\n`;
+  if (summary)   msg += `\n*Summary:*\n${summary}\n`;
   if (nextSteps) msg += `\n*Next Steps:*\n${nextSteps}\n`;
   if (file)      msg += `\n*Related File:* ${file}`;
 
@@ -122,7 +112,7 @@ function updatePreview() {
 }
 
 function clearForm() {
-  ['project-name','completed-by','summary','next-steps','related-file','notify'].forEach(id => {
+  ['project-name','completed-by','summary','next-steps','related-file'].forEach(id => {
     document.getElementById(id).value = '';
   });
   document.getElementById('status').value = '';
