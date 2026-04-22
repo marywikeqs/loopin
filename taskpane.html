@@ -10,8 +10,9 @@ body{background:#0d1117;color:#e6edf3;font-family:-apple-system,BlinkMacSystemFo
 .header{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #30363d}
 .header-icon{font-size:20px}
 .header-title{font-size:14px;font-weight:700;letter-spacing:.5px}
-.channel-badge{background:#4a154b;color:#fff;font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;letter-spacing:.3px}
 .label{font-size:9px;font-weight:700;letter-spacing:.8px;color:#7d8590;margin-bottom:6px}
+.channel-select{width:100%;background:#161b22;border:1px solid #30363d;border-radius:6px;color:#e6edf3;font-size:12px;padding:8px 10px;outline:none;margin-bottom:14px;cursor:pointer}
+.channel-select:focus{border-color:#4a154b}
 .templates{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
 .tmpl-btn{background:#161b22;border:1px solid #30363d;color:#c9d1d9;font-size:10px;padding:5px 10px;border-radius:4px;cursor:pointer;transition:all .15s}
 .tmpl-btn:hover{border-color:#4a154b;color:#e6edf3}
@@ -24,17 +25,6 @@ textarea:focus{border-color:#4a154b}
 .status{margin-top:10px;font-size:11px;padding:8px 10px;border-radius:5px;display:none}
 .status.ok{display:block;background:#0d2818;color:#3fb950;border:1px solid #238636}
 .status.err{display:block;background:#2d1216;color:#f85149;border:1px solid #f85149}
-.divider{border:none;border-top:1px solid #21262d;margin:18px 0}
-.settings-toggle{background:none;border:none;color:#7d8590;font-size:10px;cursor:pointer;display:flex;align-items:center;gap:5px;padding:0}
-.settings-toggle:hover{color:#c9d1d9}
-.settings-panel{display:none;margin-top:10px}
-.settings-panel.open{display:block}
-input[type=text]{width:100%;background:#161b22;border:1px solid #30363d;border-radius:4px;color:#e6edf3;font-size:11px;padding:7px 9px;outline:none;margin-bottom:6px}
-input[type=text]:focus{border-color:#4a154b}
-.save-btn{background:#161b22;border:1px solid #30363d;color:#c9d1d9;font-size:10px;padding:5px 12px;border-radius:4px;cursor:pointer}
-.save-btn:hover{border-color:#4a154b;color:#e6edf3}
-.webhook-hint{font-size:9px;color:#7d8590;margin-top:4px}
-.no-webhook{background:#2d1a00;border:1px solid #bb5500;color:#ffa657;font-size:11px;padding:8px 10px;border-radius:5px;margin-bottom:12px}
 </style>
 </head>
 <body>
@@ -42,12 +32,13 @@ input[type=text]:focus{border-color:#4a154b}
 <div class="header">
   <span class="header-icon">🔁</span>
   <span class="header-title">LOOPIN</span>
-  <span class="channel-badge" id="channel-badge">#maryworkflowtests</span>
 </div>
 
-<div id="no-webhook-warn" class="no-webhook" style="display:none">
-  ⚠ No webhook URL saved. Add it in Settings below.
-</div>
+<div class="label">SEND TO</div>
+<select class="channel-select" id="channel-select">
+  <option value="test">Test Channel</option>
+  <option value="sales_leadership">Sales Leadership</option>
+</select>
 
 <div class="label">QUICK TEMPLATES</div>
 <div class="templates">
@@ -60,20 +51,8 @@ input[type=text]:focus{border-color:#4a154b}
 <textarea id="message" placeholder="Type your message..." oninput="updateCount()"></textarea>
 <div class="char-count"><span id="char-count">0</span> characters</div>
 
-<button class="send-btn" id="send-btn" onclick="sendMessage()">Send to Slack</button>
+<button class="send-btn" id="send-btn" onclick="sendMessage()">Send</button>
 <div class="status" id="status"></div>
-
-<hr class="divider">
-
-<button class="settings-toggle" onclick="toggleSettings()">⚙ Settings</button>
-<div class="settings-panel" id="settings-panel">
-  <div class="label" style="margin-top:10px">SLACK WEBHOOK URL</div>
-  <input type="text" id="webhook-input" placeholder="https://hooks.slack.com/services/..." />
-  <div class="label" style="margin-top:10px">CHANNEL NAME (display only)</div>
-  <input type="text" id="channel-input" placeholder="#maryworkflowtests" />
-  <div class="webhook-hint">Saved locally in this browser.</div>
-  <button class="save-btn" onclick="saveSettings()" style="margin-top:8px">Save</button>
-</div>
 
 <script>
 const TEMPLATES = {
@@ -81,19 +60,6 @@ const TEMPLATES = {
   sprint:  '🏃 *Sprint Update — Quilt Software*\n\nSprint planning has been updated. Review what\'s in flight, what\'s in prep, and what\'s on deck for upcoming sprints.',
   golive:  '🎉 *Projects Gone Live*\n\nNew projects have been marked as Gone Live! View the full release history on the dashboard.'
 };
-
-function getWebhook()  { return localStorage.getItem('li_webhook') || ''; }
-function getChannel()  { return localStorage.getItem('li_channel') || '#maryworkflowtests'; }
-
-function init() {
-  if (!getWebhook()) document.getElementById('no-webhook-warn').style.display = 'block';
-  document.getElementById('channel-badge').textContent = getChannel();
-  document.getElementById('send-btn').textContent = 'Send to ' + getChannel();
-  const wi = document.getElementById('webhook-input');
-  const ci = document.getElementById('channel-input');
-  if (wi) wi.value = getWebhook();
-  if (ci) ci.value = getChannel();
-}
 
 function useTemplate(key) {
   document.getElementById('message').value = TEMPLATES[key];
@@ -104,48 +70,36 @@ function updateCount() {
   document.getElementById('char-count').textContent = document.getElementById('message').value.length;
 }
 
-function toggleSettings() {
-  document.getElementById('settings-panel').classList.toggle('open');
-}
-
-function saveSettings() {
-  const webhook  = document.getElementById('webhook-input').value.trim();
-  const channel  = document.getElementById('channel-input').value.trim() || '#maryworkflowtests';
-  if (webhook) {
-    localStorage.setItem('li_webhook', webhook);
-    document.getElementById('no-webhook-warn').style.display = 'none';
-  }
-  localStorage.setItem('li_channel', channel);
-  document.getElementById('channel-badge').textContent = channel;
-  document.getElementById('send-btn').textContent = 'Send to ' + channel;
-  showStatus('ok', 'Settings saved.');
-}
-
 async function sendMessage() {
-  const webhook = getWebhook();
-  if (!webhook) { showStatus('err', 'No webhook URL saved. Add it in Settings.'); return; }
-  const msg = document.getElementById('message').value.trim();
-  if (!msg)  { showStatus('err', 'Message cannot be empty.'); return; }
+  const channel = document.getElementById('channel-select').value;
+  const msg     = document.getElementById('message').value.trim();
+  if (!msg) { showStatus('err', 'Message cannot be empty.'); return; }
 
   const btn = document.getElementById('send-btn');
   btn.disabled = true;
   btn.textContent = 'Sending…';
 
   try {
-    await fetch(webhook, {
+    const res = await fetch('/.netlify/functions/send-slack', {
       method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: 'payload=' + encodeURIComponent(JSON.stringify({ text: msg }))
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ channel, message: msg })
     });
-    showStatus('ok', '✓ Message sent to ' + getChannel());
-    document.getElementById('message').value = '';
-    updateCount();
+
+    const data = await res.json();
+    if (res.ok && data.ok) {
+      const label = document.getElementById('channel-select').selectedOptions[0].text;
+      showStatus('ok', '✓ Sent to ' + label);
+      document.getElementById('message').value = '';
+      updateCount();
+    } else {
+      showStatus('err', data.error || 'Something went wrong.');
+    }
   } catch(e) {
-    showStatus('err', 'Failed to send. Check your webhook URL in Settings.');
+    showStatus('err', 'Failed to send. Please try again.');
   } finally {
     btn.disabled = false;
-    btn.textContent = 'Send to ' + getChannel();
+    btn.textContent = 'Send';
   }
 }
 
@@ -155,8 +109,6 @@ function showStatus(type, msg) {
   el.textContent = msg;
   setTimeout(() => { el.style.display = 'none'; }, 5000);
 }
-
-init();
 </script>
 </body>
 </html>
