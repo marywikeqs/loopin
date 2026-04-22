@@ -10,14 +10,14 @@
   <Version>1.0.0.0</Version>
   <ProviderName>Quilt Software</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
-  <DisplayName DefaultValue="Send to Slack"/>
+  <DisplayName DefaultValue="LoopIn"/>
   <Description DefaultValue="Send Slack notifications from Excel"/>
-  <IconUrl DefaultValue="https://steady-cupcake-7a6418.netlify.app/icon-32.png"/>
-  <HighResolutionIconUrl DefaultValue="https://steady-cupcake-7a6418.netlify.app/icon-80.png"/>
-  <SupportUrl DefaultValue="https://steady-cupcake-7a6418.netlify.app"/>
+  <IconUrl DefaultValue="https://loopinqs.netlify.app/icon-32.png"/>
+  <HighResolutionIconUrl DefaultValue="https://loopinqs.netlify.app/icon-80.png"/>
+  <SupportUrl DefaultValue="https://loopinqs.netlify.app"/>
 
   <AppDomains>
-    <AppDomain>https://steady-cupcake-7a6418.netlify.app</AppDomain>
+    <AppDomain>https://loopinqs.netlify.app</AppDomain>
   </AppDomains>
 
   <Hosts>
@@ -25,7 +25,7 @@
   </Hosts>
 
   <DefaultSettings>
-    <SourceLocation DefaultValue="https://steady-cupcake-7a6418.netlify.app/taskpane.html"/>
+    <SourceLocation DefaultValue="https://loopinqs.netlify.app/taskpane.html"/>
   </DefaultSettings>
 
   <Permissions>ReadWriteDocument</Permissions>
@@ -68,17 +68,17 @@
     </Hosts>
     <Resources>
       <bt:Images>
-        <bt:Image id="Icon.16x16" DefaultValue="https://steady-cupcake-7a6418.netlify.app/icon-16.png"/>
-        <bt:Image id="Icon.32x32" DefaultValue="https://steady-cupcake-7a6418.netlify.app/icon-32.png"/>
-        <bt:Image id="Icon.80x80" DefaultValue="https://steady-cupcake-7a6418.netlify.app/icon-80.png"/>
+        <bt:Image id="Icon.16x16" DefaultValue="https://loopinqs.netlify.app/icon-16.png"/>
+        <bt:Image id="Icon.32x32" DefaultValue="https://loopinqs.netlify.app/icon-32.png"/>
+        <bt:Image id="Icon.80x80" DefaultValue="https://loopinqs.netlify.app/icon-80.png"/>
       </bt:Images>
       <bt:Urls>
-        <bt:Url id="Commands.Url" DefaultValue="https://steady-cupcake-7a6418.netlify.app/commands.html"/>
-        <bt:Url id="Taskpane.Url" DefaultValue="https://steady-cupcake-7a6418.netlify.app/taskpane.html"/>
+        <bt:Url id="Commands.Url" DefaultValue="https://loopinqs.netlify.app/commands.html"/>
+        <bt:Url id="Taskpane.Url" DefaultValue="https://loopinqs.netlify.app/taskpane.html"/>
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="SlackGroup.Label" DefaultValue="Slack"/>
-        <bt:String id="SlackButton.Label" DefaultValue="Send to Slack"/>
+        <bt:String id="SlackButton.Label" DefaultValue="LoopIn"/>
       </bt:ShortStrings>
       <bt:LongStrings>
         <bt:String id="SlackButton.Tooltip" DefaultValue="Send a message to #maryworkflowtests"/>
