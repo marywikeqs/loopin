@@ -10,21 +10,24 @@ body{background:#0d1117;color:#e6edf3;font-family:-apple-system,BlinkMacSystemFo
 .header{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #30363d}
 .header-icon{font-size:20px}
 .header-title{font-size:14px;font-weight:700;letter-spacing:.5px}
-.label{font-size:9px;font-weight:700;letter-spacing:.8px;color:#7d8590;margin-bottom:6px}
-.channel-select{width:100%;background:#161b22;border:1px solid #30363d;border-radius:6px;color:#e6edf3;font-size:12px;padding:8px 10px;outline:none;margin-bottom:14px;cursor:pointer}
-.channel-select:focus{border-color:#4a154b}
-.templates{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
-.tmpl-btn{background:#161b22;border:1px solid #30363d;color:#c9d1d9;font-size:10px;padding:5px 10px;border-radius:4px;cursor:pointer;transition:all .15s}
-.tmpl-btn:hover{border-color:#4a154b;color:#e6edf3}
-textarea{width:100%;background:#161b22;border:1px solid #30363d;border-radius:6px;color:#e6edf3;font-size:12px;line-height:1.55;padding:10px;resize:vertical;min-height:140px;outline:none;font-family:inherit}
-textarea:focus{border-color:#4a154b}
-.char-count{text-align:right;font-size:9px;color:#7d8590;margin-top:3px;margin-bottom:12px}
-.send-btn{width:100%;background:#4a154b;color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:600;padding:10px;cursor:pointer;transition:background .15s;letter-spacing:.3px}
+.label{font-size:9px;font-weight:700;letter-spacing:.8px;color:#7d8590;margin-bottom:5px;margin-top:12px}
+.label span{color:#f85149;margin-left:2px}
+input[type=text],select,textarea{width:100%;background:#161b22;border:1px solid #30363d;border-radius:5px;color:#e6edf3;font-size:12px;padding:7px 10px;outline:none;font-family:inherit}
+input[type=text]:focus,select:focus,textarea:focus{border-color:#4a154b}
+select{cursor:pointer}
+textarea{resize:vertical;min-height:70px;line-height:1.5}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.divider{border:none;border-top:1px solid #21262d;margin:16px 0}
+.preview-label{font-size:9px;font-weight:700;letter-spacing:.8px;color:#7d8590;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between}
+.preview-box{background:#161b22;border:1px solid #30363d;border-radius:5px;padding:10px;font-size:11px;color:#c9d1d9;line-height:1.6;white-space:pre-wrap;word-break:break-word;min-height:60px;max-height:200px;overflow-y:auto}
+.send-btn{width:100%;background:#4a154b;color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:600;padding:10px;cursor:pointer;transition:background .15s;letter-spacing:.3px;margin-top:12px}
 .send-btn:hover:not(:disabled){background:#611f69}
 .send-btn:disabled{background:#30363d;color:#7d8590;cursor:default}
 .status{margin-top:10px;font-size:11px;padding:8px 10px;border-radius:5px;display:none}
 .status.ok{display:block;background:#0d2818;color:#3fb950;border:1px solid #238636}
 .status.err{display:block;background:#2d1216;color:#f85149;border:1px solid #f85149}
+.clear-btn{background:none;border:none;color:#7d8590;font-size:10px;cursor:pointer;padding:0}
+.clear-btn:hover{color:#e6edf3}
 </style>
 </head>
 <body>
@@ -34,46 +37,97 @@ textarea:focus{border-color:#4a154b}
   <span class="header-title">LOOPIN</span>
 </div>
 
-<div class="label">SEND TO</div>
-<select class="channel-select" id="channel-select">
+<div class="label">SEND TO<span>*</span></div>
+<select id="channel-select">
   <option value="test">Test Channel</option>
   <option value="sales_leadership">Sales Leadership</option>
 </select>
 
-<div class="label">QUICK TEMPLATES</div>
-<div class="templates">
-  <button class="tmpl-btn" onclick="useTemplate('update')">📊 Dashboard Update</button>
-  <button class="tmpl-btn" onclick="useTemplate('sprint')">🏃 Sprint Summary</button>
-  <button class="tmpl-btn" onclick="useTemplate('golive')">🎉 Gone Live</button>
+<div class="label">PROJECT / REQUEST NAME<span>*</span></div>
+<input type="text" id="project-name" placeholder="e.g. Salesforce CPQ Integration" oninput="updatePreview()">
+
+<div class="row2">
+  <div>
+    <div class="label">STATUS<span>*</span></div>
+    <select id="status" onchange="updatePreview()">
+      <option value="">— Select —</option>
+      <option value="✅ Completed">✅ Completed</option>
+      <option value="🚀 Gone Live">🚀 Gone Live</option>
+      <option value="🔄 In Progress">🔄 In Progress</option>
+      <option value="🔵 In Review">🔵 In Review</option>
+      <option value="⚠️ Blocked">⚠️ Blocked</option>
+    </select>
+  </div>
+  <div>
+    <div class="label">COMPLETED BY</div>
+    <input type="text" id="completed-by" placeholder="Name or team" oninput="updatePreview()">
+  </div>
 </div>
 
-<div class="label">MESSAGE</div>
-<textarea id="message" placeholder="Type your message..." oninput="updateCount()"></textarea>
-<div class="char-count"><span id="char-count">0</span> characters</div>
+<div class="label">SUMMARY</div>
+<textarea id="summary" placeholder="What was done or what's the update?" oninput="updatePreview()"></textarea>
+
+<div class="label">NEXT STEPS</div>
+<textarea id="next-steps" placeholder="What happens next?" oninput="updatePreview()"></textarea>
+
+<div class="label">RELATED FILE / LINK</div>
+<input type="text" id="related-file" placeholder="https://..." oninput="updatePreview()">
+
+<hr class="divider">
+
+<div class="preview-label">
+  MESSAGE PREVIEW
+  <button class="clear-btn" onclick="clearForm()">✕ Clear</button>
+</div>
+<div class="preview-box" id="preview">Fill in the fields above to preview your message.</div>
 
 <button class="send-btn" id="send-btn" onclick="sendMessage()">Send</button>
-<div class="status" id="status"></div>
+<div class="status" id="status-msg"></div>
 
 <script>
-const TEMPLATES = {
-  update:  '📊 *Salesforce Projects Dashboard Updated*\n\nThe latest sprint data is now live. Check current sprint capacity, project states, and upcoming releases.',
-  sprint:  '🏃 *Sprint Update — Quilt Software*\n\nSprint planning has been updated. Review what\'s in flight, what\'s in prep, and what\'s on deck for upcoming sprints.',
-  golive:  '🎉 *Projects Gone Live*\n\nNew projects have been marked as Gone Live! View the full release history on the dashboard.'
-};
+function buildMessage() {
+  const name      = document.getElementById('project-name').value.trim();
+  const status    = document.getElementById('status').value;
+  const by        = document.getElementById('completed-by').value.trim();
+  const summary   = document.getElementById('summary').value.trim();
+  const nextSteps = document.getElementById('next-steps').value.trim();
+  const file      = document.getElementById('related-file').value.trim();
 
-function useTemplate(key) {
-  document.getElementById('message').value = TEMPLATES[key];
-  updateCount();
+  if (!name && !status && !summary) return '';
+
+  let msg = '';
+  if (name)      msg += `*${name}*\n`;
+  if (status)    msg += `*Status:* ${status}\n`;
+  if (by)        msg += `*Completed By:* ${by}\n`;
+  if (summary)   msg += `\n${summary}\n`;
+  if (nextSteps) msg += `\n*Next Steps:*\n${nextSteps}\n`;
+  if (file)      msg += `\n*Related File:* ${file}`;
+
+  return msg.trim();
 }
 
-function updateCount() {
-  document.getElementById('char-count').textContent = document.getElementById('message').value.length;
+function updatePreview() {
+  const msg = buildMessage();
+  document.getElementById('preview').textContent = msg || 'Fill in the fields above to preview your message.';
+}
+
+function clearForm() {
+  ['project-name','completed-by','summary','next-steps','related-file'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('status').value = '';
+  updatePreview();
 }
 
 async function sendMessage() {
   const channel = document.getElementById('channel-select').value;
-  const msg     = document.getElementById('message').value.trim();
-  if (!msg) { showStatus('err', 'Message cannot be empty.'); return; }
+  const name    = document.getElementById('project-name').value.trim();
+  const status  = document.getElementById('status').value;
+  const msg     = buildMessage();
+
+  if (!name)   { showStatus('err', 'Project / Request Name is required.'); return; }
+  if (!status) { showStatus('err', 'Please select a status.'); return; }
+  if (!msg)    { showStatus('err', 'Message cannot be empty.'); return; }
 
   const btn = document.getElementById('send-btn');
   btn.disabled = true;
@@ -90,8 +144,7 @@ async function sendMessage() {
     if (res.ok && data.ok) {
       const label = document.getElementById('channel-select').selectedOptions[0].text;
       showStatus('ok', '✓ Sent to ' + label);
-      document.getElementById('message').value = '';
-      updateCount();
+      clearForm();
     } else {
       showStatus('err', data.error || 'Something went wrong.');
     }
@@ -104,7 +157,7 @@ async function sendMessage() {
 }
 
 function showStatus(type, msg) {
-  const el = document.getElementById('status');
+  const el = document.getElementById('status-msg');
   el.className = 'status ' + type;
   el.textContent = msg;
   setTimeout(() => { el.style.display = 'none'; }, 5000);
