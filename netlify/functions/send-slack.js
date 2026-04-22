@@ -23,11 +23,7 @@ exports.handler = async function(event) {
 
   const webhook = webhooks[channel];
   if (!webhook) {
-    return { statusCode: 400, body: JSON.stringify({
-      error: 'Unknown channel',
-      received: channel,
-      env_test_set: !!process.env.SLACK_WEBHOOK_TEST,
-    })};
+    return { statusCode: 400, body: JSON.stringify({ error: 'Unknown channel' }) };
   }
 
   try {
